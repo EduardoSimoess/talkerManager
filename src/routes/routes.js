@@ -6,6 +6,9 @@ const router = express.Router();
 
 const fs = require('fs').promises;
 
+const emailMiddleware = require('../middlewares/emailMiddleware');
+const passwordMiddleware = require('../middlewares/passwordMiddleware');
+
 const read = async () => {
     const path = '../talker.json';
     try {
@@ -33,11 +36,7 @@ router.get('/talker/:id', async (req, res) => {
     }
 });
 
-router.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    // const x = req.body;
-
-    if (email.includes('@') && password.length >= 6) {
+router.post('/login', emailMiddleware, passwordMiddleware, (_req, res) => {
         console.log(Math.random().toString(16).substr(2));
         const tokenInit = Math.random().toString(16).substr(2)
          + Math.random().toString(16).substr(2);
@@ -48,7 +47,6 @@ router.post('/login', (req, res) => {
             token = tokenInit.substring(9);
         }
         res.status(200).send({ token });
-    }
 });
 
 module.exports = router;
