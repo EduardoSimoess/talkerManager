@@ -8,6 +8,8 @@ const fs = require('fs').promises;
 
 const emailMiddleware = require('../middlewares/emailMiddleware');
 const passwordMiddleware = require('../middlewares/passwordMiddleware');
+const nameMiddleware = require('../middlewares/nameMiddleware');
+const ageMiddleware = require('../middlewares/ageMiddleware');
 
 const read = async () => {
     const path = '../talker.json';
@@ -18,6 +20,17 @@ const read = async () => {
         return null;
     }
 };
+
+async function write(newPearson) {
+    const path = '../talker.json';
+    try {
+        const string = JSON.stringify(newPearson);
+        const contentFile = await fs.writeFile(join(__dirname, path), string);
+        return contentFile;
+    } catch (error) {
+        return null;
+    }
+} 
 
 router.get('/talker', async (_req, res) => {
     const talkers = await read();
@@ -37,7 +50,6 @@ router.get('/talker/:id', async (req, res) => {
 });
 
 router.post('/login', emailMiddleware, passwordMiddleware, (_req, res) => {
-        console.log(Math.random().toString(16).substr(2));
         const tokenInit = Math.random().toString(16).substr(2)
          + Math.random().toString(16).substr(2);
         let token;
@@ -47,6 +59,26 @@ router.post('/login', emailMiddleware, passwordMiddleware, (_req, res) => {
             token = tokenInit.substring(9);
         }
         res.status(200).send({ token });
+});
+
+router.post('/talker', nameMiddleware, ageMiddleware, async (req, res) => {
+    const { name, age, talk } = req.body;
+    const talker = await read();
+    const { id } = talker[talker.length - 1];
+    const newId = Number(id) + 1;
+    const newTalker = {
+        name,
+        age,
+        id: newId,
+        talk,
+    };
+    talker.push(newTalker);
+
+    const teste = await write(talker);
+    console.log(teste);
+    console.log(talker);
+    
+    res.status(201).json(newTalker);
 });
 
 module.exports = router;
