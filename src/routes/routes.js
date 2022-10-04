@@ -16,13 +16,13 @@ const read = async () => {
     }
 };
 
-router.get('/', async (_req, res) => {
+router.get('/talker', async (_req, res) => {
     const talkers = await read();
     console.log(talkers);
     res.status(200).json(talkers);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/talker/:id', async (req, res) => {
     const { id } = req.params;
     const talkers = await read();
     const thatTalker = talkers.filter((talker) => talker.id === Number(id));
@@ -30,6 +30,24 @@ router.get('/:id', async (req, res) => {
     res.status(200).json(thatTalker[0]);
     } else {
     res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
+    }
+});
+
+router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    // const x = req.body;
+
+    if (email.includes('@') && password.length >= 6) {
+        console.log(Math.random().toString(16).substr(2));
+        const tokenInit = Math.random().toString(16).substr(2)
+         + Math.random().toString(16).substr(2);
+        let token;
+        if (tokenInit.length === 26) {
+            token = tokenInit.substring(10);
+        } else {
+            token = tokenInit.substring(9);
+        }
+        res.status(200).send({ token });
     }
 });
 
