@@ -109,16 +109,17 @@ watchedAtMiddleware, watchedAtMiddlewareDate, rateMiddleware, async (req, res) =
     res.status(200).json(newObj);
 });
 
-router.delete('talker/:id', async (req, res) => {
+router.delete('/talker/:id', tokenMiddleware, async (req, res) => {
     const { id } = req.params;
     const talkers = await read();
-    for (let i = 0; i < talkers.length; i += 1) { 
-        if (talkers[i].id === Number(id)) {
-            talkers.splice(i, 1); 
-        }
-    }
+    // for (let i = 0; i < talkers.length; i += 1) { 
+    //     if (talkers[i].id === Number(id)) {
+    //         talkers.splice(i, 1); 
+    //     }
+    // }
 
-    const data = await write(talkers);
+    const newTalkers = talkers.filter((talker) => talker.id !== Number(id));
+    const data = await write(newTalkers);
     console.log(data);
 
     res.status(204).end();
