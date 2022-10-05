@@ -109,4 +109,19 @@ watchedAtMiddleware, watchedAtMiddlewareDate, rateMiddleware, async (req, res) =
     res.status(200).json(newObj);
 });
 
+router.delete('talker/:id', async (req, res) => {
+    const { id } = req.params;
+    const talkers = await read();
+    for (let i = 0; i < talkers.length; i += 1) { 
+        if (talkers[i].id === Number(id)) {
+            talkers.splice(i, 1); 
+        }
+    }
+
+    const data = await write(talkers);
+    console.log(data);
+
+    res.status(204).end();
+});
+
 module.exports = router;
