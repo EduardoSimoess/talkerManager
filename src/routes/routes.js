@@ -36,7 +36,16 @@ async function write(newPearson) {
         return null;
     }
 } 
+router.get('/talker/search', tokenMiddleware, async (req, res) => {
+    const { q } = req.query;
 
+    const talkers = await read();
+
+    const filtered = talkers.filter((talker) => talker.name.includes(q));
+    if (filtered) {
+        res.status(200).json(filtered);
+    }
+});
 router.get('/talker', async (_req, res) => {
     const talkers = await read();
     console.log(talkers);
@@ -117,7 +126,6 @@ router.delete('/talker/:id', tokenMiddleware, async (req, res) => {
     //         talkers.splice(i, 1); 
     //     }
     // }
-
     const newTalkers = talkers.filter((talker) => talker.id !== Number(id));
     const data = await write(newTalkers);
     console.log(data);
