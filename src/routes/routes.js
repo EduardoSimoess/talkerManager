@@ -10,6 +10,10 @@ const emailMiddleware = require('../middlewares/emailMiddleware');
 const passwordMiddleware = require('../middlewares/passwordMiddleware');
 const nameMiddleware = require('../middlewares/nameMiddleware');
 const ageMiddleware = require('../middlewares/ageMiddleware');
+const talkMiddleware = require('../middlewares/talkMiddleware');
+const watchedAtMiddleware = require('../middlewares/watchedAtMiddleware');
+const watchedAtMiddlewareDate = require('../middlewares/watchedAtMiddlewareDate');
+const rateMiddleware = require('../middlewares/rateMiddlewares');
 
 const read = async () => {
     const path = '../talker.json';
@@ -61,7 +65,8 @@ router.post('/login', emailMiddleware, passwordMiddleware, (_req, res) => {
         res.status(200).send({ token });
 });
 
-router.post('/talker', nameMiddleware, ageMiddleware, async (req, res) => {
+router.post('/talker', nameMiddleware, ageMiddleware, talkMiddleware, 
+watchedAtMiddleware, watchedAtMiddlewareDate, rateMiddleware, async (req, res) => {
     const { name, age, talk } = req.body;
     const talker = await read();
     const { id } = talker[talker.length - 1];
