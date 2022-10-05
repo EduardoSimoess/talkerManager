@@ -87,4 +87,26 @@ watchedAtMiddleware, watchedAtMiddlewareDate, rateMiddleware, async (req, res) =
     res.status(201).json(newTalker);
 });
 
+router.put('/talker/:id', tokenMiddleware, nameMiddleware, ageMiddleware, talkMiddleware, 
+watchedAtMiddleware, watchedAtMiddlewareDate, rateMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const talkers = await read();
+    const { name, age, talk } = req.body;
+    const newObj = {
+        name,
+        age,
+        id: Number(id),
+        talk,
+    };
+    for (let i = 0; i < talkers.length; i += 1) {
+        if (talkers[i].id === Number(id)) {
+            talkers[i] = newObj;
+        }
+    }
+    const novo = await write(talkers);
+    console.log(novo);
+
+    res.status(200).json(newObj);
+});
+
 module.exports = router;
