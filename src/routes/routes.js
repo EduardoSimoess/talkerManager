@@ -38,7 +38,7 @@ async function write(newPearson) {
 } 
 router.get('/talker/search', tokenMiddleware, async (req, res) => {
     const { q } = req.query;
-
+console.log(q);
     const talkers = await read();
 
     const filtered = talkers.filter((talker) => talker.name.includes(q));
@@ -46,6 +46,7 @@ router.get('/talker/search', tokenMiddleware, async (req, res) => {
         res.status(200).json(filtered);
     }
 });
+
 router.get('/talker', async (_req, res) => {
     const talkers = await read();
     console.log(talkers);
